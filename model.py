@@ -61,6 +61,7 @@ class SequenceLabelingModel(nn.Module):
 
         inputs = torch.transpose(inputs, 1, 0)  # size=[max_len, batch_size, input_size]
 
+        self.lstm.flatten_parameters()
         lstm_output, _ = self.lstm(inputs)
         lstm_output = lstm_output.transpose(1, 0).contiguous()  # [batch_size, max_len, lstm_units]
 
