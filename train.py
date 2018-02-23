@@ -100,7 +100,7 @@ sl_model = SequenceLabelingModel(kwargs)
 print(sl_model)
 if use_cuda:
     sl_model = sl_model.cuda()
-# TODO lr加入参数
+# lr加入参数
 optimizer = torch.optim.Adam(sl_model.parameters(), lr=opts.learn_rate)
 criterion = torch.nn.NLLLoss(ignore_index=0)
 
