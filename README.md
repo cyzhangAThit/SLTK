@@ -111,3 +111,7 @@
  - numpy==1.13.1
  - torch==0.2.0.post3
  - torchvision==0.1.9
+
+## Updating
+
+ - 2018-02-26: `utils/`移入`TorchNN/`中；添加`layers`模块，并完成CRF层(未加入模型).
