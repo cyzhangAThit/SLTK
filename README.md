@@ -82,7 +82,7 @@
 |rm|str|./model/|root_model，模型根目录|
 |bs|int|64|batch_size，batch size|
 |g|bool|False|是否使用GPU加速|
-|nw|int|4|num_worker，加载数据时的线程数|
+|nw|int|8|num_worker，加载数据时的线程数|
 
 运行`python3 train.py -h`可打印出帮助信息。
 
@@ -100,7 +100,7 @@
 |pm|str|无|path_model，模型路径|
 |bs|int|64|batch_size，batch size|
 |g|bool|False|是否使用GPU加速|
-|nw|int|4|num_worker，加载数据时的线程数|
+|nw|int|8|num_worker，加载数据时的线程数|
 |o|str|./result.txt|预测结果存放路径|
 
 运行`python3 test.py -h`可打印出帮助信息。
