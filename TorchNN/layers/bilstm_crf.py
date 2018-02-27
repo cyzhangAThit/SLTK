@@ -37,6 +37,9 @@ class BiLSTMCRFModel(nn.Module):
                 lstm_input_dim += self.feature_dim_dict[feature_name]
         if hasattr(self, 'pretrained_embed') and self.pretrained_embed is not None:
             self.embedding_dict[self.features[0]].weight.data.copy_(torch.from_numpy(self.pretrained_embed))
+            if self.use_cuda:
+                self.embedding_dict[self.features[0]].weight.data = \
+                    self.embedding_dict[self.features[0]].weight.data.cuda()
 
         # lstm layer
         self.lstm = nn.LSTM(lstm_input_dim, self.lstm_units, num_layers=self.layer_nums, bidirectional=True)
