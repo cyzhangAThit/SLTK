@@ -6,9 +6,11 @@
  - **训练**。训练序列化标注模型，并保存在开发集上性能最好的一次模型;
  - **测试**。对新的实例进行标注。
 
-## 1. 数据准备
+## 1. 快速开始
 
-训练数据处理成下列形式，特征之间用制表符(或空格)隔开，每行共n列，1至n-1列为特征，最后一列为label。
+### 1.1 数据格式
+
+训练数据处理成下列形式，特征之间用制表符(或空格)隔开，每行共n列，1至n-1列为特征，最后一列为label。句子之间用**空行**分隔。
 
     苏   NR   B-ORG
     州   NR   I-ORG
@@ -23,9 +25,28 @@
     州   NR   I-GPE
     市   NR   E-GPE
 
-## 2. 预处理
+### 1.2 预处理&训练&测试
 
-### 2.1 预处理训练文件
+Step 1:
+
+将训练、测试文件处理成所需格式，放入`../data/`目录下，文件名分别为`train.txt`和`test.txt`。
+
+Step 2:
+
+    $ chmod a+x *.sh
+
+Step 3:
+
+    $ ./preprocessing_train.sh
+    $ ./preprocessing_test.sh
+    $ ./train.sh
+    $ ./test.sh
+
+## 2. 使用说明
+
+### 2.1 预处理
+
+#### 2.1.1 预处理训练文件
 
 训练文件的预处理包括:
 
@@ -43,7 +64,7 @@
 
     --re ./res/embed/ --pe ./path_to_embed_file
 
-### 2.2 预处理测试文件
+#### 2.1.2 预处理测试文件
 
 **运行方式:**
 
@@ -63,7 +84,7 @@
 
 运行`python3 preprocessing.py -h`可打印出帮助信息。
 
-## 3. 训练
+### 2.2 训练
 
 若预处理时`root_idx`等参数使用的是默认值，则在训练时不需要设定相应参数。
 
@@ -101,7 +122,7 @@
 
 运行`python3 train.py -h`可打印出帮助信息。
 
-## 4. 测试
+### 2.3 测试
 
 **运行方式:**
 
@@ -120,14 +141,14 @@
 
 运行`python3 test.py -h`可打印出帮助信息。
 
-## 5. Requirements
+## 3. Requirements
 
  - gensim==2.3.0
  - numpy==1.13.1
  - torch==0.2.0.post3
  - torchvision==0.1.9
 
-## 6. 参考
+## 4. 参考
 
  - [http://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html](http://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html "http://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html")
  - [https://github.com/jiesutd/PyTorchSeqLabel](https://github.com/jiesutd/PyTorchSeqLabel "https://github.com/jiesutd/PyTorchSeqLabel")
