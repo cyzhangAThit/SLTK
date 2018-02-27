@@ -21,9 +21,6 @@ class BiLSTMCRFModel(nn.Module):
             pretrained_embed: np.array, default is None
             dropout_rate: float, dropout rate
             use_cuda: bool
-
-            START_TAG_IDX: int, tag开始编号
-            END_TAG_IDX: int, tag结束编号
         """
         super(BiLSTMCRFModel, self).__init__()
         for k, v in args.items():
