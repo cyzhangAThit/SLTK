@@ -13,8 +13,8 @@ import pickle
 import numpy as np
 from optparse import OptionParser
 from collections import Counter
-from utils import build_word_voc, build_word_embed
-from utils import is_interactive, parse_int_list
+from TorchNN.utils import build_word_voc, build_word_embed
+from TorchNN.utils import is_interactive, parse_int_list
 
 
 def update_feature_dict(items, feature_dict, features):
