@@ -219,6 +219,12 @@ class CRF(nn.module):
         return gold_score
 
     def neg_log_likelihood_loss(self, feats, mask, tags):
+        """
+        Args:
+            feats: size=(batch_size, seq_len, tag_size)
+            mask: size=(batch_size, seq_len)
+            tags: size=(batch_size, seq_len)
+        """
         batch_size = feats.size(0)
         forward_score, scores = self._forward_alg(feats, mask)
         gold_score = self._score_sentence(scores, mask, tags)
