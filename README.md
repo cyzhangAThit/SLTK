@@ -6,9 +6,26 @@
  - **训练**。训练序列化标注模型，并保存在开发集上性能最好的一次模型;
  - **测试**。对新的实例进行标注。
 
-## 1. 预处理
+## 1. 数据准备
 
-### 1.1 预处理训练文件
+训练数据处理成下列形式，特征之间用制表符(或空格)隔开，每行共n列，1至n-1列为特征，最后一列为label。
+
+    苏   NR   B-ORG
+    州   NR   I-ORG
+    大   NN   I-ORG
+    学   NN   E-ORG
+    位   VV   O
+    于   VV   O
+    江   NR   B-GPE
+    苏   NR   I-GPE
+    省   NR   E-GPE
+    苏   NR   B-GPE
+    州   NR   I-GPE
+    市   NR   E-GPE
+
+## 2. 预处理
+
+### 2.1 预处理训练文件
 
 训练文件的预处理包括:
 
@@ -26,7 +43,7 @@
 
     --re ./res/embed/ --pe ./path_to_embed_file
 
-### 1.2 预处理测试文件
+### 2.2 预处理测试文件
 
 **运行方式:**
 
@@ -46,7 +63,7 @@
 
 运行`python3 preprocessing.py -h`可打印出帮助信息。
 
-## 2. 训练
+## 3. 训练
 
 若预处理时`root_idx`等参数使用的是默认值，则在训练时不需要设定相应参数。
 
@@ -84,7 +101,7 @@
 
 运行`python3 train.py -h`可打印出帮助信息。
 
-## 3. 测试
+## 4. 测试
 
 **运行方式:**
 
@@ -103,14 +120,14 @@
 
 运行`python3 test.py -h`可打印出帮助信息。
 
-## 4. Requirements
+## 5. Requirements
 
  - gensim==2.3.0
  - numpy==1.13.1
  - torch==0.2.0.post3
  - torchvision==0.1.9
 
-## 5. 参考
+## 6. 参考
 
  - [http://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html](http://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html "http://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html")
  - [https://github.com/jiesutd/PyTorchSeqLabel](https://github.com/jiesutd/PyTorchSeqLabel "https://github.com/jiesutd/PyTorchSeqLabel")
