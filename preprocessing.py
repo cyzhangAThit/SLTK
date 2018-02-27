@@ -123,10 +123,12 @@ def processing(path_data, has_label=True, features=[0], root_data_idx=None,
     if not os.path.exists(root_voc):
         os.makedirs(root_voc)
     # 构建feature voc, 默认从1开始编号
-    for feature_i in features:
+    for i, feature_i in enumerate(features):
         print('构建feature_{0} voc...'.format(feature_i))
         pt = 100 if feature_i != 0 else percentile
         feature2id_dict = build_word_voc(feature_dict[feature_i], percentile=pt)
+        if i == 0 and path_embed:
+            first_feature2id_dict = feature2id_dict
         path_feature_voc = os.path.join(root_voc, 'feature_{0}_2id.pkl'.format(feature_i))
         file_feature_voc = codecs.open(path_feature_voc, 'wb')
         pickle.dump(feature2id_dict, file_feature_voc)
@@ -147,8 +149,8 @@ def processing(path_data, has_label=True, features=[0], root_data_idx=None,
         if not os.path.exists(root_embed):
             os.makedirs(root_embed)
         print('构建word embedding表...')
-        word_embed_table, unknow_count = build_word_embed(feature_dict[0], path_embed)
-        print('\t未登录词数量: {0}/{1}'.format(unknow_count, len(word2id_dict)))
+        word_embed_table, unknow_count = build_word_embed(first_feature2id_dict, path_embed)
+        print('\t未登录词数量: {0}/{1}'.format(unknow_count, len(first_feature2id_dict)))
         path_word_embed = os.path.join(root_embed, 'word2vec.pkl')
         file_word_embed = codecs.open(path_word_embed, 'wb')
         pickle.dump(word_embed_table, file_word_embed)

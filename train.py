@@ -86,6 +86,8 @@ for i, feature_name in enumerate(features):
         feature_dim_dict[feature_name] = opts.feature_dim[i]
     else:
         feature_dim_dict[feature_name] = 32  # default value 32
+if pretrained_embed is not None:  # 以预训练向量维度为准
+    feature_dim_dict[features[0]] = pretrained_embed.shape[-1]
 dropout_rate = opts.dropout
 use_cuda = opts.cuda
 kwargs = {'features': features, 'lstm_units': opts.lstm, 'layer_nums': opts.layer_nums,
