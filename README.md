@@ -22,7 +22,7 @@
 
     $ python3 preprocessing.py -l --pd ./data/train.txt --ri ./data/train_idx/ --rv ./res/voc/
 
-若需要使用预训练的词向量，则在上述命令后添加，其中`path_to_embed_file`是预训练词向量路径，可以是`bin`或`txt`类型的文件:
+若需要使用预训练的词向量，则在上述命令之后添加下列命令，其中`path_to_embed_file`是预训练词向量路径，可以是`bin`或`txt`类型的文件:
 
     --re ./res/embed/ --pe ./path_to_embed_file
 
