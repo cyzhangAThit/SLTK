@@ -1,12 +1,10 @@
 # SLF - Sequence Labeling Framework
 
-序列化标注框架，利用pytorch实现了高效的数据加载模块，可以完成:
+序列化标注框架，实现了Bi-LSTM-CRF模型，并利用pytorch实现了高效的数据加载模块，可以完成:
 
  - **预处理**。包括构建词表、label表，从预训练文件构建word embedding;
  - **训练**。训练序列化标注模型，并保存在开发集上性能最好的一次模型;
  - **测试**。对新的实例进行标注。
-
-**注**: 模型目前只实现了Bi-LSTM。
 
 ## 1. 预处理
 
@@ -112,6 +110,13 @@
  - torch==0.2.0.post3
  - torchvision==0.1.9
 
+## 5. 参考
+
+ - [http://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html](http://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html "http://pytorch.org/tutorials/beginner/nlp/advanced_tutorial.html")
+ - [https://github.com/jiesutd/PyTorchSeqLabel](https://github.com/jiesutd/PyTorchSeqLabel "https://github.com/jiesutd/PyTorchSeqLabel")
+ - [http://www.aclweb.org/anthology/N16-1030](http://www.aclweb.org/anthology/N16-1030 "http://www.aclweb.org/anthology/N16-1030")
+
 ## Updating
 
+ - 2018-02-27: `bilstm.py`和`bilstm_crf.py`移入`TorchNN/layers`模块中，训练时使用Bi-LSTM-CRF模型.
  - 2018-02-26: `utils/`移入`TorchNN/`中；添加`layers`模块，并完成CRF层(未加入模型).

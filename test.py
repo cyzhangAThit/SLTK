@@ -5,9 +5,8 @@ import sys
 import codecs
 from time import time
 from optparse import OptionParser
-from utils import read_pkl, SentenceDataUtil
-from utils import is_interactive
-from model import SequenceLabelingModel
+from TorchNN.utils import read_pkl, SentenceDataUtil
+from TorchNN.utils import is_interactive
 
 import torch
 from torch.autograd import Variable
@@ -57,7 +56,7 @@ dataset_test = dataset.get_all_data()
 data_loader_test = DataLoader(
     dataset_test, batch_size=batch_size, shuffle=False, num_workers=num_worker)
 
-# TODO 测试
+# 测试
 label2id_dict_rev = dict()
 for k, v in label2id_dict.items():
     label2id_dict_rev[v] = k

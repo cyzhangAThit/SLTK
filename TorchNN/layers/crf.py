@@ -22,23 +22,26 @@ def log_sum_exp(vec, m_size):
         torch.exp(vec - max_score.expand_as(vec)), 1)).view(-1, m_size)
 
 
-class CRF(nn.module):
+class CRF(nn.Module):
 
     def __init__(self, args):
         """
         Args:
             target_size: int, target size
-            START_TAG_IDX: int, 开始tag的编号
-            END_TAG_IDX: int, 结束tag的编号
-            use_cuda: bool, 是否使用gpu
-            average_batch: bool, loss是否作平均
+            use_cuda: bool, 是否使用gpu, default is True
+            average_batch: bool, loss是否作平均, default is True
         """
         super(CRF, self).__init__()
         for k, v in args.items():
             self.__setattr__(k, v)
+        if not hasattr(self, 'average_batch'):
+            self.__setattr__('average_batch', True)
+        if not hasattr(self, 'use_cuda'):
+            self.__setattr__('use_cuda', True)
 
         # init transitions
-        init_transitions = torch.zeros(self.target_size+2, self.target_size_+2)
+        self.START_TAG_IDX, self.END_TAG_IDX = -2, -1
+        init_transitions = torch.zeros(self.target_size+2, self.target_size+2)
         init_transitions[:, self.START_TAG_IDX] = -1000.
         init_transitions[self.END_TAG_IDX, :] = -1000.
         if self.use_cuda:
@@ -71,7 +74,7 @@ class CRF(nn.module):
         scores = scores.view(seq_len, batch_size, tag_size, tag_size)
 
         seq_iter = enumerate(scores)
-        _, inivalues = seq_iter.next()
+        _, inivalues = seq_iter.__next__()
         partition = inivalues[:, self.START_TAG_IDX, :].clone().view(batch_size, tag_size, 1)
 
         for idx, cur_values in seq_iter:
@@ -90,7 +93,7 @@ class CRF(nn.module):
             batch_size, tag_size, tag_size) + partition.contiguous().view(
                 batch_size, tag_size, 1).expand(batch_size, tag_size, tag_size)
         cur_partition = log_sum_exp(cur_values, tag_size)
-        final_partition = cur_partition[: self.END_TAG_IDX]
+        final_partition = cur_partition[:, self.END_TAG_IDX]
         return final_partition.sum(), scores
 
     def _viterbi_decode(self, feats, mask):
@@ -124,8 +127,8 @@ class CRF(nn.module):
         back_points = list()
         partition_history = list()
 
-        mask = (1 - mask.long()).byte()
-        _, inivalues = seq_iter.next()
+        mask = 1 + (-1) * mask
+        _, inivalues = seq_iter.__next__()
 
         partition = inivalues[:, self.START_TAG_IDX, :].clone().view(batch_size, tag_size, 1)
         partition_history.append(partition)
@@ -136,7 +139,7 @@ class CRF(nn.module):
             partition, cur_bp = torch.max(cur_values, 1)
             partition_history.append(partition)
 
-            cur_bp.mask_fill_(mask[idx].view(batch_size, 1).expand(batch_size, tag_size), 0)
+            cur_bp.masked_fill_(mask[idx].view(batch_size, 1).expand(batch_size, tag_size), 0)
             back_points.append(cur_bp)
 
         partition_history = torch.cat(partition_history).view(
@@ -156,7 +159,7 @@ class CRF(nn.module):
         back_points = torch.cat(back_points).view(seq_len, batch_size, tag_size)
 
         pointer = last_bp[:, self.END_TAG_IDX]
-        insert_last = pointer.contiguous().view(batch_size, 1, 1,).expand(batch_size, 1, tag_size)
+        insert_last = pointer.contiguous().view(batch_size, 1, 1).expand(batch_size, 1, tag_size)
         back_points = back_points.transpose(1, 0).contiguous()
 
         back_points.scatter_(1, last_position, insert_last)
@@ -175,8 +178,8 @@ class CRF(nn.module):
         return path_score, decode_idx
 
 
-    def forward(self, feats):
-        path_score, best_path = self._viterbi_decode(feats)
+    def forward(self, feats, mask):
+        path_score, best_path = self._viterbi_decode(feats, mask)
         return path_score, best_path
 
     def _score_sentence(self, scores, mask, tags):
@@ -189,9 +192,9 @@ class CRF(nn.module):
         Returns:
             score:
         """
-        batch_size = feats.size(0)
-        seq_len = feats.size(1)
-        tag_size = feats.size(-1)
+        batch_size = scores.size(1)
+        seq_len = scores.size(0)
+        tag_size = scores.size(-1)
 
         new_tags = Variable(torch.LongTensor(batch_size, seq_len))
         if self.use_cuda:

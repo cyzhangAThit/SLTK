@@ -9,9 +9,9 @@ import pickle
 from time import time
 import numpy as np
 from optparse import OptionParser
-from utils import read_pkl, SentenceDataUtil
-from utils import is_interactive, parse_int_list
-from model import SequenceLabelingModel
+from TorchNN.utils import read_pkl, SentenceDataUtil
+from TorchNN.utils import is_interactive, parse_int_list
+from TorchNN.layers import BiLSTMCRFModel as SLModel
 
 import torch
 from torch.autograd import Variable
@@ -94,13 +94,11 @@ kwargs = {'features': features, 'lstm_units': opts.lstm, 'layer_nums': opts.laye
           'max_len': opts.max_len, 'use_cuda': use_cuda}
 
 
-# TODO 修改模型
 # 初始化模型
-sl_model = SequenceLabelingModel(kwargs)
+sl_model = SLModel(kwargs)
 print(sl_model)
 if use_cuda:
     sl_model = sl_model.cuda()
-# lr加入参数
 optimizer = torch.optim.Adam(sl_model.parameters(), lr=opts.learn_rate)
 criterion = torch.nn.NLLLoss(ignore_index=0)
 
@@ -113,7 +111,7 @@ root_model = opts.root_model
 if not os.path.exists(root_model):
     os.makedirs(root_model)
 path_model = os.path.join(root_model, 'sl.model')
-best_dev_loss = 1000.
+best_dev_loss = sys.maxsize
 for epoch in range(nb_epoch):
     sys.stdout.write('epoch {0} / {1}: \r'.format(epoch, nb_epoch))
     total_loss, dev_loss = 0., 0.
@@ -126,9 +124,10 @@ for epoch in range(nb_epoch):
                 sample_batched[feature_name] = Variable(sample_batched[feature_name]).cuda()
             else:
                 sample_batched[feature_name] = Variable(sample_batched[feature_name])
-        tag_scores = sl_model(sample_batched)
+        lstm_feats = sl_model(sample_batched)
 
-        loss = criterion(tag_scores, sample_batched['label'].view(-1))
+        mask = sample_batched[features[0]] > 0
+        loss = sl_model.loss(lstm_feats, mask, sample_batched['label'])
         loss.backward()
         optimizer.step()
 
@@ -149,8 +148,9 @@ for epoch in range(nb_epoch):
                 sample_batched[feature_name] = Variable(sample_batched[feature_name]).cuda()
             else:
                 sample_batched[feature_name] = Variable(sample_batched[feature_name])
-        pred = sl_model(sample_batched)
-        loss = criterion(pred, sample_batched['label'].view(-1))
+        lstm_feats = sl_model(sample_batched)
+        mask = sample_batched[features[0]] > 0
+        loss = sl_model.loss(lstm_feats, mask, sample_batched['label'])
         dev_loss += loss.data[0]
 
     total_loss /= float(len(data_loader_train))
