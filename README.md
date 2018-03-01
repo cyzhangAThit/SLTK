@@ -1,6 +1,6 @@
-# SLF - Sequence Labeling Framework
+# SLTK - Sequence Labeling Toolkit
 
-序列化标注框架，实现了Bi-LSTM-CRF模型，并利用pytorch实现了高效的数据加载模块，可以完成:
+序列化标注工具，实现了Bi-LSTM-CRF模型，并利用pytorch实现了高效的数据加载模块，可以完成:
 
  - **预处理**。包括构建词表、label表，从预训练文件构建word embedding;
  - **训练**。训练序列化标注模型，并保存在开发集上性能最好的一次模型;
