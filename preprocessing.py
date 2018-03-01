@@ -27,7 +27,7 @@ def update_feature_dict(items, feature_dict, features):
         features: list of int
     """
     for feature_i in features:
-        feature_dict[feature_i].update(items[feature_i])
+        feature_dict[feature_i].update([items[feature_i]])
     feature_dict['label'].add(items[-1])
 
 
