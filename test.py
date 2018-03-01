@@ -18,6 +18,7 @@ op.add_option('--ri', '--root_idx', dest='root_idx', default='./data/test_idx', 
 op.add_option('--rv', '--root_voc', dest='root_voc', default='./res/voc', type='str', help='字典根目录')
 op.add_option('--pm', '--path_model', dest='path_model', default='./model/sl.model',
               type='str', help='模型路径')
+op.add_option('--ml', dest='max_len', default=None, type='int', help='实例最大长度')
 op.add_option('--bs', '--batch_size', dest='batch_size', default=64, type='int', help='batch size')
 op.add_option('-g', '--cuda', dest='cuda', action='store_true', default=False, help='是否使用GPU加速')
 op.add_option('--nw', dest='nb_work', default=8, type='int', help='加载数据的线程数')
@@ -31,6 +32,8 @@ argv = [] if is_interactive() else sys.argv[1:]
 path_model = opts.path_model
 sl_model = torch.load(path_model)
 sl_model.set_use_cuda(opts.cuda)
+if opts.max_len:
+    sl_model.max_len = opts.max_len
 
 # 初始化数据参数
 root_idx = opts.root_idx
